@@ -3,10 +3,11 @@ from datetime import datetime, timedelta
 import os
 import pathlib
 import requests
+import sys
 
-def download(d):
-    folder = d.strftime("%Y/%m")
-    dest = d.strftime("%Y/%m/%d.pdf")
+def download(root, d):
+    folder = os.path.join(root, d.strftime("%Y/%m"))
+    dest = os.path.join(folder, d.strftime("%d.pdf"))
     pathlib.Path(folder).mkdir(parents=True, exist_ok=True)
     if os.path.exists(dest):
         return
@@ -17,6 +18,11 @@ def download(d):
 
 if __name__ == '__main__':
     d = date.today()
+    if len(sys.argv) >= 1:
+        root = sys.argv[1] 
+        print("Using custom download directory: {}".format(root))
+    else:
+        root = os.getcwd()
     while True:
-        download(d)
+        download(root, d)
         d = d - timedelta(days=1)
